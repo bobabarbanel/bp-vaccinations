@@ -1,0 +1,110 @@
+body {
+	padding: 10px;
+	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 1000px;
+}
+.site {
+	margin-top: 30px;	
+	font-size: 24px;
+}
+.site label {
+	height: 20px;
+	margin: 50px;
+	color: darkblue;
+	font-size: 20px;
+}
+.site > label:hover {
+	background-color: lightblue;
+}
+
+.results {
+	width: 610px;
+}
+.results th {
+	font-size: 36px;
+	width: 50%;
+}
+.results td {
+	font-size: 108px;
+	font-weight: bold;
+	width: 300px;
+	text-align: right;
+}
+.results_title {
+	background: tan;
+	width: 610px;
+	text-align: center;
+	margin-left: 60px;
+	display: flex;
+	align-items: center;
+}
+
+.title_location {
+	align-self: center;
+	margin-left: 7%;
+}
+#pickdate {
+	font-size: 20px;
+}
+
+.results td {
+	transition: all 1s ease;
+}
+#bar {
+	display: block;
+	height: 10px;
+	background: cyan;
+	max-width: 610px;
+	margin-bottom: 10px;
+	margin-left: 224px;
+	align-self: flex-start;
+}
+
+
+others {
+	background: wheat;
+	width: 610px;
+	display: flex;
+	justify-content: space-around;
+}
+others > div {
+	font-size: 24px
+}
+others > div > span {
+	margin-left: 10px;
+}
+.countdown_timer {
+	width: 120px;
+	text-align: center;
+	font-weight: normal;
+	color: green;
+	font-size: 20px;
+}
+#selectedDate {
+	margin-top: 30px;
+	color: blue;
+	font-size: 30px;
+}
+#launchButton {
+	font-size: 24px;
+	padding: 5px;
+	margin: 20px 0 0 100px;
+}
+#launchButton:hover {
+	background-color: lightgreen;
+}
+
+.helpText {
+	font-size: 24px;
+	font-style: bold;
+}
+.stripe {
+	background-color: purple;
+	width: 500px;
+	height: 3px;
+}
