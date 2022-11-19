@@ -70,7 +70,7 @@ async function generate(tag) {
 }
 /* GET home page. */
 router.get("/", function(req, res) {
-	res.send("Please use either /allvac or /byvac.");
+	res.render("chooseApp");
 });
 router.get("/:app", function(req, res) {
 	res.render("index", { app: req.params.app });
