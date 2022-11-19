@@ -2,7 +2,6 @@
   "name": "bp-vaccinations",
   "version": "1.0.0",
   "description": "",
-  "main": "bin/www.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bobabarbanel/bp-vaccinations.git"
@@ -16,7 +15,7 @@
   "homepage": "https://github.com/bobabarbanel/bp-vaccinations#readme",
   "scripts": {
     "start_env": "export $(cat .env | xargs) && nodemon --watch . ./bin/www",
-    "start": "nodemon --watch . ./bin/www"
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -28,5 +27,9 @@
     "http-errors": "^1.6.3",
     "md5": "^2.3.0",
     "morgan": "~1.9.1"
+  },
+  "engines": {
+    "npm": ">=8.0.0 <9.0.0",
+    "node": ">=16.0.0 <17.0.0"
   }
 }
