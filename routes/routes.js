@@ -70,7 +70,7 @@ async function generate(tag) {
 }
 /* GET home page. */
 router.get("/", function(req, res) {
-	res.render("indexUnknownApp");
+	res.send("Please use either /allvac or /byvac.");
 });
 router.get("/:app", function(req, res) {
 	res.render("index", { app: req.params.app });
@@ -89,8 +89,8 @@ router.get("/appts/:startDate/:location/:locationId/:app", function(req, res) {
 			// log('calculate returns')
 			switch (vs.status) {
 				case "done":
-          vs.app = app;
-          log(vs);
+					vs.app = app;
+					log(vs);
 					res.render("results", vs); // deep copy ?
 					break;
 
@@ -162,7 +162,6 @@ async function queryCounts(theDate, locationId, vs) {
 }
 
 function pivot(vs, data) {
-
 	data.forEach(({ status, objectName, count }) => {
 		if (count) {
 			objectName = objectName.replace(/ .*/, "");
