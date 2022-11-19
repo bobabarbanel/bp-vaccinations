@@ -14,9 +14,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 
-var bodyParser = require('body-parser')
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
+// var bodyParser = require('body-parser')
+// app.use(bodyParser.urlencoded({ extended: true }))
+// app.use(bodyParser.json())
 // app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
