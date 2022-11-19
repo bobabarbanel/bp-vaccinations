@@ -1,79 +1,93 @@
 $(function () {
     const locationId = $('locationId').text().trim();
     const startDate = $('startDate').text().trim();
+    const location = $('location').text().trim();
     const timeLeft = $('.countdown_timer');
-    const timeStamp = $("#time");
-    const MINUTES = 3;
+    const bar = $('bar');
 
-    timeStamp.text("As of " + new Date())
-    const REFRESH_TIME = MINUTES * 60 * 1000; // 3 minutes
+    const REFRESH_MINUTES = 3;
+    const REFRESH_TIME = REFRESH_MINUTES * 60 * 1000; // 3 minutes
+    let interval = null;
 
-    const TRANSITION_COLOR = '#AED6F1';
-    const AFTER_TRANSITION_COLORS = {
-        "PENDING": "wheat",
-        "CANCELLED": "wheat",
-        "COMPLETED": "white",
-        "TOTAL": "white",
-        "OPEN": "pink",
-        "time": "white"
-    };
+    run_indicator();
+    function run_indicator() {
+        if (+$('#OPEN_TOTAL').text().trim() === 0) {
+            if (interval) clearInterval(interval);
+            // if (indicator) clearInterval(indicator);
+            init_timer('Done')
+            bar.css("width", "80%").css('background-color', 'green');
+            $("body").css('background-color', 'lightgrey');
+        }
+        else {
+            draw(Date.now(), REFRESH_TIME);
+        }
+    }
 
-    $("#bar").css("width", 0.1 + "%");
-    init_timer();
-    draw(Date.now(), REFRESH_TIME)
-    const interval = setInterval(function () {
-        refreshValues();
-    }, REFRESH_TIME);
+    function draw(start, end) {
+        bar.css("width", 0.1 + "%");
+        init_timer(`${REFRESH_MINUTES}:00`);
 
-    async function draw(start, end) {
-        const indicator = setInterval(() => {
+        interval = setInterval(() => {
             const nowMS = Date.now() - start;
             const now = nowMS / 1000 / 60;
-            let min = Math.floor(MINUTES - now);
-            let sec = Math.floor(((MINUTES - now) - min) * 60);
+            let min = Math.floor(REFRESH_MINUTES - now);
+            let sec = Math.floor((REFRESH_MINUTES - now - min) * 60);
             sec = Math.round(sec / 5) * 5;
             if (sec < 10) sec = '0' + sec;
             if (min < 0) {
-                min = MINUTES;
+                min = REFRESH_MINUTES;
                 sec = '00';
             }
-            timeLeft.html(`<i class="fas fa-history"></i>&nbsp;${min}:${sec}&nbsp;`);
+            init_timer(`${min}:${sec}`);
 
-            $("#bar").css("width", 615 * nowMS / end + "px")
-
+            let percent = 80 - (REFRESH_MINUTES - now) * 80 / REFRESH_MINUTES;
+            bar.css("width", percent + "%")
             if (nowMS >= (.995) * end) {
-                clearInterval(indicator);
-                $("#bar").css("width", 0.1 + "%"); // reset
+                clearInterval(interval);
+                interval = null;
+                refreshValues().then(() => run_indicator())
             }
         }, 5000)
     }
-    // function rand() { return  Math.floor(Math.random()*20); }
+
     async function refreshValues() {
-
-        let url = `/refresh/${startDate.trim()}/${locationId.trim()}`;
-        const data = (await axios.get(url)).data;
-        for (let tag in data) {
-            const target = $('#' + tag);
-
-            target.css("background", TRANSITION_COLOR).text(data[tag]);
-
-            setTimeout(() => {
-                target.css('background', AFTER_TRANSITION_COLORS[tag]);
-            }, 500);
-            if (data[OPEN] == 0) {
-                clearInterval(interval);
+        const url = `/refresh/${startDate}/${encodeURI(location)}/${locationId}`;
+        let vs = await axios.get(url);
+        vs = vs.data;
+        // TODO: transitions??
+        for (let part of ['OPEN', 'COMPLETED', 'PENDING', 'CANCELLED', 'NO_SHOW']) {
+            for (let vac of ['P', 'M', 'J']) {
+                const id = `${part}_${vac}`; // html id
+                $(`#${id}`).text(vs[part][vac]);
             }
         }
-        init_timer();
-        draw(Date.now(), REFRESH_TIME * .95).then(() => init_timer());
+        for (let id of ['OPEN_TOTAL', 'COMPLETED_TOTAL',
+            'TOTAL_OC_P', 'TOTAL_OC_M', 'TOTAL_OC_J',
+            'TOTAL_OC',
+            'PENDING_TOTAL', 'CANCELLED_TOTAL', 'NO_SHOW_TOTAL']) {
 
-        timeStamp.css('background', TRANSITION_COLOR).text("As of " + new Date());
-        setTimeout(() => {
-            timeStamp.css('background', AFTER_TRANSITION_COLORS["time"]);
-        }, 500)
+            $(`#${id}`).text(vs[id]);
+        }
+        // DEBUGGING: $(`#OPEN_TOTAL`).text('0'); - test end condition
+        // for (let tag of data) {
+
+        //     const target = $('#' + tag);
+
+        //     target.css("background", TRANSITION_COLOR).text(data[tag]);
+
+        //     setTimeout(() => {
+        //         target.css('background', AFTER_TRANSITION_COLORS[tag]);
+        //     }, 500);
+        //     if (data['OPEN'] == 0) {
+        //         clearInterval(interval);
+        //         if(indicator) clearInterval(indicator);
+        //         $("#bar").css("width", "100%").css('background-color','green').css('display', 'block');
+        //     }
+        // }
+
     }
 
-    function init_timer() {
-        timeLeft.html('<i class="fas fa-history"></i>&nbsp;3:00');
+    function init_timer(text) {
+        timeLeft.html(`<i class="fas fa-history"></i>&nbsp;${text}&nbsp;`);
     }
 });

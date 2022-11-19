@@ -1,35 +1,18 @@
 {
-  "name": "bp-vaccinations",
-  "version": "1.0.0",
-  "description": "",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bobabarbanel/bp-vaccinations.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/bobabarbanel/bp-vaccinations/issues"
-  },
-  "homepage": "https://github.com/bobabarbanel/bp-vaccinations#readme",
+  "name": "mrccovid",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
     "start_env": "export $(cat .env | xargs) && nodemon --watch . ./bin/www",
-    "start": "node ./bin/www"
+    "start": "nodemon --watch . ./bin/www"
   },
   "dependencies": {
-    "axios": "^0.21.1",
-    "cookie-parser": "~1.4.4",
-    "dateformat": "^4.5.1",
-    "debug": "~2.6.9",
+    "axios": "^1.1.3",
+    "dateformat": "^5.0.3",
+    "debug": "^4.3.4",
     "ejs": "^3.1.8",
-    "express": "~4.16.1",
-    "http-errors": "^1.6.3",
-    "md5": "^2.3.0",
-    "morgan": "~1.9.1"
-  },
-  "engines": {
-    "npm": ">=8.0.0 <9.0.0",
-    "node": ">=16.0.0 <17.0.0"
+    "express": "^4.18.2",
+    "http-errors": "^2.0.0",
+    "md5": "^2.3.0"
   }
 }
