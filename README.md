@@ -7,15 +7,15 @@
 
 Installed on Heroku. Can be called two ways:
 
-https://bp-vaccinations.herokuapp.com/allvac
+https://bp-vaccinations.herokuapp.com/allvac (Show Totals only)
 
 OR
 
-https://bp-vaccinations.herokuapp.com/byvac
+https://bp-vaccinations.herokuapp.com/byvac (Show Totals and Details by Vaccine)
 
 OR
 
-https://bp-vaccinations.herokuapp.com
+https://bp-vaccinations.herokuapp.com (Allow user to choose one the the above.)
 
 
 
