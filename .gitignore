@@ -106,3 +106,4 @@ dist
 
 # for local use
 .env
+settings.json
