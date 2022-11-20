@@ -9,15 +9,15 @@
     <link rel="icon" type="image/png" href="/images/favicon-16x16.png" />
     <link rel='stylesheet' href='/stylesheets/results.css' />
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
-        integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
-        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"
+        integrity="sha512-0qU9M9jfqPw6FKkPafM3gy2CBAvUWnYVOfNPDYKVuRTel1PrciTj+a9P3loJB+j0QmN2Y0JYQmkBBS8W+mbezg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 </head>
 
 <body>
-    
+
     <data style="display: none">
         <locationId>
             <%= locationId %>
@@ -52,7 +52,7 @@
                     <%= OPEN_TOTAL %>
                 </div>
 
-                <% if( app !== "allvac" ){ %>
+                <% if( app !=="allvac" ){ %>
                     <div class="small">
                         <!--  vertical or horiz -->
                         <div class="vacNum">
@@ -89,7 +89,7 @@
                 <div id="COMPLETED_TOTAL" class="vacTotal">
                     <%= COMPLETED_TOTAL %>
                 </div>
-                <% if( app !== "allvac" ){ %>
+                <% if( app !=="allvac" ){ %>
                     <div class="small">
                         <!--  vertical or horiz -->
                         <div class="vacNum">
@@ -125,7 +125,7 @@
                 <div id="TOTAL_OC" class="vacTotal">
                     <%= TOTAL_OC %>
                 </div>
-                <% if( app !== "allvac" ){ %>
+                <% if( app !=="allvac" ){ %>
                     <div class="small">
                         <!--  vertical or horiz -->
                         <div class="vacNum">
@@ -158,49 +158,49 @@
             <div>Pending:&nbsp;<span id="PENDING_TOTAL">
                     <%= PENDING_TOTAL %>
                 </span>&nbsp;
-                <% if( app !== "allvac" ){ %>
-                <span class="tiny">
-                    <div>
-                        (<span id="PENDING_P">
-                            <%= PENDING.P %>
-                        </span> &nbsp;P
-                    </div>,&nbsp;
-                    <div>
-                        <span id="PENDING_M">
-                            <%= PENDING.M %>
-                        </span> &nbsp;M
-                    </div>,&nbsp;
-                    <div>
-                        <span id="PENDING_F">
-                            <%= PENDING.F %>
-                        </span> &nbsp;F)
-                    </div>
-                </span>
-                <% } %>
+                <% if( app !=="allvac" ){ %>
+                    <span class="tiny">
+                        <div>
+                            (<span id="PENDING_P">
+                                <%= PENDING.P %>
+                            </span> &nbsp;P
+                        </div>,&nbsp;
+                        <div>
+                            <span id="PENDING_M">
+                                <%= PENDING.M %>
+                            </span> &nbsp;M
+                        </div>,&nbsp;
+                        <div>
+                            <span id="PENDING_F">
+                                <%= PENDING.F %>
+                            </span> &nbsp;F)
+                        </div>
+                    </span>
+                    <% } %>
             </div>
 
             <div>Cancelled+NS:&nbsp;<span id="CANCELLED_TOTAL">
                     <%= CANCELLED_TOTAL + NO_SHOW_TOTAL %>
                 </span>&nbsp;
-                <% if( app !== "allvac" ){ %>
-                <span class="tiny">
-                    <div>
-                        (<span id="CANCELLED_P">
-                            <%= CANCELLED.P + NO_SHOW.P %>
-                        </span> &nbsp;P
-                    </div>,&nbsp;
-                    <div>
-                        <span id="CANCELLED_M">
-                            <%= CANCELLED.M + NO_SHOW.M %>
-                        </span> &nbsp;M
-                    </div>,&nbsp;
-                    <div>
-                        <span id="CANCELLED_F">
-                            <%= CANCELLED.F + NO_SHOW.F %>
-                        </span> &nbsp;F)
-                    </div>
-                </span>
-                <% } %>
+                <% if( app !=="allvac" ){ %>
+                    <span class="tiny">
+                        <div>
+                            (<span id="CANCELLED_P">
+                                <%= CANCELLED.P + NO_SHOW.P %>
+                            </span> &nbsp;P
+                        </div>,&nbsp;
+                        <div>
+                            <span id="CANCELLED_M">
+                                <%= CANCELLED.M + NO_SHOW.M %>
+                            </span> &nbsp;M
+                        </div>,&nbsp;
+                        <div>
+                            <span id="CANCELLED_F">
+                                <%= CANCELLED.F + NO_SHOW.F %>
+                            </span> &nbsp;F)
+                        </div>
+                    </span>
+                    <% } %>
             </div>
         </others>
         <p id="time">

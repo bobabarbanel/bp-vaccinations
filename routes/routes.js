@@ -68,11 +68,14 @@ async function generate(tag) {
 		return err;
 	}
 }
-/* GET home page. */
+/* URL did not include allvac or byvac */
 router.get("/", function(req, res) {
 	res.render("chooseApp");
 });
+
 router.get("/:app", function(req, res) {
+	// pass allvac or byvac to index.html so it can 
+	// then be used for rendering in results
 	res.render("index", { app: req.params.app });
 });
 
@@ -141,6 +144,7 @@ async function calculate(theDate, locationId, vs) {
 }
 
 async function queryCounts(theDate, locationId, vs) {
+	// TODO: Problem - api from TimeTap ignores the locationId
 	log("queryCounts");
 	const theURL =
 		BASE_URL +
@@ -174,6 +178,7 @@ function pivot(vs, data) {
 	});
 }
 
+// calculate sums for each vaccine so totals can be displayed
 function do_totals(vs) {
 	vs.OPEN_TOTAL = vs.OPEN.P + vs.OPEN.M + vs.OPEN.F;
 	vs.COMPLETED_TOTAL = vs.COMPLETED.P + vs.COMPLETED.M + vs.COMPLETED.F;
@@ -197,7 +202,7 @@ router.get("/refresh/:startDate/:location/:locationId", function(req, res) {
 		.then(() => {
 			switch (vs.status) {
 				case "done":
-					res.json(vs); // deep copy ?
+					res.json(vs);
 					break;
 
 				case "error":
