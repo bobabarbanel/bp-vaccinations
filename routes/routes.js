@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 const md5 = require("md5");
-const DEBUG = true;
+const DEBUG = false;
 function log(...args) {
 	if (DEBUG) {
 		console.log(...args);
