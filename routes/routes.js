@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 const md5 = require("md5");
-const DEBUG = false;
+const DEBUG = true;
 function log(...args) {
 	if (DEBUG) {
 		console.log(...args);
@@ -49,7 +49,7 @@ class VacStore {
 }
 
 async function generate(tag) {
-	// log("generate(" + tag + ") called")
+	log("generate(" + tag + ") called");
 	try {
 		const apiKey = process.env.APIKEY;
 		const private_key = process.env.PRIVATE_KEY;
@@ -74,7 +74,7 @@ router.get("/", function(req, res) {
 });
 
 router.get("/:app", function(req, res) {
-	// pass allvac or byvac to index.html so it can 
+	// pass allvac or byvac to index.html so it can
 	// then be used for rendering in results
 	res.render("index", { app: req.params.app });
 });
@@ -93,7 +93,7 @@ router.get("/appts/:startDate/:location/:locationId/:app", function(req, res) {
 			switch (vs.status) {
 				case "done":
 					vs.app = app;
-					log(vs);
+					// log(vs);
 					res.render("results", vs); // deep copy ?
 					break;
 
@@ -107,45 +107,52 @@ router.get("/appts/:startDate/:location/:locationId/:app", function(req, res) {
 		})
 		.catch(err => {});
 });
-
-async function getReasonIds(startDate) {
-	// log('getReasonIds', { getReasonIds })
-	if (sessionToken === null) {
-		await generate("getReasonIds");
-		if (reasonIds.length === 0) {
-			let theURL =
-				BASE_URL + `/reasonIdList?startDate=${startDate}endDate=${startDate}`;
-			theURL += "&sessionToken=" + sessionToken;
-			// log('getReasonIds', theURL);
-			const result = await axios.get(theURL);
-			reasonIds = result.data.join(",");
-			// log('getReasonIds now = ', reasonIds);
-		}
-		return reasonIds;
-	}
+async function processIds(startDate) {
+	let ids = [];
 	if (reasonIds.length === 0) {
 		let theURL =
 			BASE_URL + `/reasonIdList?startDate=${startDate}endDate=${startDate}`;
 		theURL += "&sessionToken=" + sessionToken;
-		// log('getReasonIds', theURL);
+		// log('processIds', theURL);
 		const result = await axios.get(theURL);
-		reasonIds = result.data.join(",");
-		// log('getReasonIds now = ', reasonIds);
+		ids = cleanIds(result.data).join(",");
+		log("getReasonIds now = ", ids);
+		return ids;
 	}
 	return reasonIds;
 }
+async function getReasonIds(startDate) {
+	if (sessionToken === null) {
+		await generate("getReasonIds", "getReasonIds");
+		return await processIds(startDate);
+	}
+	if (reasonIds.length === 0) {
+		log("no reasonIds");
+		return await processIds(startDate);
+	}
+	log("getReasonIds", 132);
+	return reasonIds;
+}
+
+function cleanIds(initial) {
+	// 11/29/22 Loren says these Ids are no longer in use
+	const removeIds = [593248, 595870, 595873, 603786, 608303, 609790, 638038];
+	log("cleanIds", initial);
+	return initial.filter(id => !removeIds.includes(id)).sort((a, b) => a - b);
+}
 
 async function calculate(theDate, locationId, vs) {
-	log("calculate");
-
+	// log("calculate");
+	log("calculate1", reasonIds);
 	reasonIds = await getReasonIds(theDate);
+	log("calculate2", reasonIds);
 
 	return queryCounts(theDate, locationId, vs);
 }
 
 async function queryCounts(theDate, locationId, vs) {
 	// TODO: Problem - api from TimeTap ignores the locationId
-	log("queryCounts");
+	// log("queryCounts");
 	const theURL =
 		BASE_URL +
 		`/appointmentList/reportCountsByStatus` +
@@ -194,7 +201,7 @@ function do_totals(vs) {
 router.get("/refresh/:startDate/:location/:locationId", function(req, res) {
 	// Consider error handling here??
 	const { startDate, location, locationId } = req.params;
-	log("/refresh", { startDate, location, locationId });
+	// log("/refresh", { startDate, location, locationId });
 	const vs = new VacStore(startDate, location, locationId).getVS();
 	// log('/refresh', vs)
 
