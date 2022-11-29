@@ -107,9 +107,9 @@ router.get("/appts/:startDate/:location/:locationId/:app", function(req, res) {
 		})
 		.catch(err => {});
 });
-async function processIds(startDate) {
-	let ids = [];
+async function processIds(startDate) {	
 	if (reasonIds.length === 0) {
+		let ids = [];
 		let theURL =
 			BASE_URL + `/reasonIdList?startDate=${startDate}endDate=${startDate}`;
 		theURL += "&sessionToken=" + sessionToken;
