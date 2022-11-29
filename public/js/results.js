@@ -12,15 +12,18 @@ $(function() {
 	run_indicator();
 	// bar that widens over refresh time cycle
 	function run_indicator() {
-		if (+$("#OPEN_TOTAL").text().trim() === 0) {
-			if (interval) clearInterval(interval);
-			// if (indicator) clearInterval(indicator);
-			init_timer("Done");
-			bar.css("width", "80%").css("background-color", "green");
-			$("body").css("background-color", "lightgrey");
-		} else {
+		// This mif() would stop cycle when OPEN reservation == 0. 
+		// But new ones can get added IN clinic, so keep going!
+
+		// if (+$("#OPEN_TOTAL").text().trim() === 0) {
+		// 	if (interval) clearInterval(interval);
+		// 	// if (indicator) clearInterval(indicator);
+		// 	init_timer("Done");
+		// 	bar.css("width", "80%").css("background-color", "green");
+		// 	$("body").css("background-color", "lightgrey");
+		// } else {
 			draw(Date.now(), REFRESH_TIME);
-		}
+		// }
 	}
 
 	function draw(start, end) {
@@ -47,7 +50,7 @@ $(function() {
 				interval = null;
 				refreshValues().then(() => run_indicator()); // get and display latest data
 			}
-		}, 5000);
+		}, 5000); // show every 5 seconds
 	}
 
 	async function refreshValues() {

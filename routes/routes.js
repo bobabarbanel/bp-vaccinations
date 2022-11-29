@@ -8,12 +8,20 @@ function log(...args) {
 		console.log(...args);
 	}
 }
+// TIME TAP site base API Url
 const BASE_URL = "https://api.timetap.com/test";
+
+// must be defined to perform counting queries
 let sessionToken = null;
-const statusList = "PENDING,OPEN,COMPLETED,CANCELLED,NO_SHOW";
+
+const STATUS_LIST = "PENDING,OPEN,COMPLETED,CANCELLED,NO_SHOW";
+const STATUS_ARRAY = STATUS_LIST.split(',');
+
+// Vaccines of Interest
 const vaccineList = "Moderna,Pfizer,Flu";
 
-let reasonIds = [];
+// List of reason ids for this date (effectively vaccine types)
+let reasonIds = '';
 class VacStore {
 	constructor(date, location, locId) {
 		this.vs = this.init(date, location, locId);
@@ -40,7 +48,7 @@ class VacStore {
 				timeZone: "America/Los_Angeles"
 			}).format(new Date())
 		};
-		for (let k of statusList.split(",")) {
+		for (let k of STATUS_ARRAY) {
 			for (let c of ["M", "P", "F"]) // vaccine types // 23 Oct 2022: all ow "F" for Flu
 				vs[k][c] = 0;
 		}
@@ -89,7 +97,7 @@ router.get("/appts/:startDate/:location/:locationId/:app", function(req, res) {
 
 	calculate(startDate, locationId, vs)
 		.then(() => {
-			// log('calculate returns')
+			log('calculate returns')
 			switch (vs.status) {
 				case "done":
 					vs.app = app;
@@ -107,57 +115,63 @@ router.get("/appts/:startDate/:location/:locationId/:app", function(req, res) {
 		})
 		.catch(err => {});
 });
+
+// sets global array reasonIds to list of ids from startDate on TimeTap
 async function processIds(startDate) {	
-	if (reasonIds.length === 0) {
-		let ids = [];
+	if (reasonIds.length === 0) { // no ids currently set
 		let theURL =
-			BASE_URL + `/reasonIdList?startDate=${startDate}endDate=${startDate}`;
-		theURL += "&sessionToken=" + sessionToken;
-		// log('processIds', theURL);
+			BASE_URL + `/reasonIdList?startDate=${startDate}endDate=${startDate}` +
+			`&sessionToken=${sessionToken}`;
+		log('processIds', theURL);
+
 		const result = await axios.get(theURL);
-		ids = cleanIds(result.data).join(",");
-		log("getReasonIds now = ", ids);
-		return ids;
+		reasonIds = cleanIds(result.data).join(",");
+		log("setting reasonIds", reasonIds);
 	}
 	return reasonIds;
 }
+
+// sets global variable **reasonIds** (inside processIds)
 async function getReasonIds(startDate) {
 	if (sessionToken === null) {
+		// need to generate sessionToken
 		await generate("getReasonIds", "getReasonIds");
-		return await processIds(startDate);
+		await processIds(startDate);
 	}
 	if (reasonIds.length === 0) {
-		log("no reasonIds");
-		return await processIds(startDate);
+		// value not set yet
+		await processIds(startDate);
 	}
-	log("getReasonIds", 132);
-	return reasonIds;
 }
 
 function cleanIds(initial) {
 	// 11/29/22 Loren says these Ids are no longer in use
 	const removeIds = [593248, 595870, 595873, 603786, 608303, 609790, 638038];
-	log("cleanIds", initial);
-	return initial.filter(id => !removeIds.includes(id)).sort((a, b) => a - b);
+	log("cleanIds initial", initial);
+	// return sorted list with the above removeIds excluded
+	const value= initial.filter(id => !removeIds.includes(id)).sort((a, b) => a - b);
+	log("cleanIds result", value);
+	return value;
 }
 
 async function calculate(theDate, locationId, vs) {
-	// log("calculate");
-	log("calculate1", reasonIds);
-	reasonIds = await getReasonIds(theDate);
-	log("calculate2", reasonIds);
+	log("calculate");
+	await getReasonIds(theDate); // sets reasonIds
+	log("calculate", reasonIds);
 
 	return queryCounts(theDate, locationId, vs);
 }
 
 async function queryCounts(theDate, locationId, vs) {
 	// TODO: Problem - api from TimeTap ignores the locationId
-	// log("queryCounts");
+	log("queryCounts reasonIds", reasonIds);
+
+	// only use of reasonIds
 	const theURL =
 		BASE_URL +
 		`/appointmentList/reportCountsByStatus` +
 		`?reasonIdList=${reasonIds}&startDate=${theDate}` +
-		`&endDate=${theDate}&statusList=${statusList}&sessionToken=${sessionToken}`;
+		`&endDate=${theDate}&statusList=${STATUS_LIST}&sessionToken=${sessionToken}`;
 
 	try {
 		vs.status = "in-progress";
@@ -201,9 +215,9 @@ function do_totals(vs) {
 router.get("/refresh/:startDate/:location/:locationId", function(req, res) {
 	// Consider error handling here??
 	const { startDate, location, locationId } = req.params;
-	// log("/refresh", { startDate, location, locationId });
+	log("/refresh", { startDate, location, locationId });
 	const vs = new VacStore(startDate, location, locationId).getVS();
-	// log('/refresh', vs)
+	log('/refresh', vs)
 
 	calculate(startDate, locationId, vs)
 		.then(() => {
