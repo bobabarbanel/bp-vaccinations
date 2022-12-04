@@ -12,7 +12,7 @@ $(function() {
 	run_indicator();
 	// bar that widens over refresh time cycle
 	function run_indicator() {
-		// This mif() would stop cycle when OPEN reservation == 0. 
+		// This mif() would stop cycle when OPEN reservation == 0.
 		// But new ones can get added IN clinic, so keep going!
 
 		// if (+$("#OPEN_TOTAL").text().trim() === 0) {
@@ -73,7 +73,8 @@ $(function() {
 			"TOTAL_OC",
 			"PENDING_TOTAL",
 			"CANCELLED_TOTAL",
-			"NO_SHOW_TOTAL"
+			"NO_SHOW_TOTAL",
+			"timeStamp"
 		]) {
 			$(`#${id}`).text(vs[id]);
 		}

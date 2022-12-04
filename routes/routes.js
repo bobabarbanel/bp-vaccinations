@@ -43,11 +43,7 @@ class VacStore {
 			COMPLETED: {},
 			PENDING: {},
 			NO_SHOW: {},
-			timeStamp: new Intl.DateTimeFormat("en-US", {
-				dateStyle: "full",
-				timeStyle: "long",
-				timeZone: "America/Los_Angeles"
-			}).format(new Date())
+			timeStamp: ''
 		};
 		for (let k of STATUS_ARRAY) {
 			for (let c of ["M", "P", "F"]) // vaccine types // 23 Oct 2022: all ow "F" for Flu
@@ -63,13 +59,12 @@ async function generate(tag) {
 		const apiKey = process.env.APIKEY;
 		const private_key = process.env.PRIVATE_KEY;
 		const signature = md5("" + apiKey + private_key);
-		const timestamp = Math.round(Date.now() / 1000);
-		// log("generate", { apiKey, private_key, signature, timestamp });
+		const urlTimeStamp = Math.round(Date.now() / 1000);
+		log("generate", { apiKey, private_key, signature, urlTimeStamp });
 
-		const tokenURL =
-			`${BASE_URL}/sessionToken?apiKey=${apiKey}` +
-			`&timestamp=${timestamp}&signature=${signature}`;
-		// log("generate", { tokenURL });
+		const tokenURL = `${BASE_URL}/sessionToken?apiKey=${apiKey}` +
+		`&timestamp=${urlTimeStamp}&signature=${signature}`;
+		log("generate", { tokenURL });
 		const res = await axios.get(tokenURL);
 		sessionToken = res.data.sessionToken; // CRITICAL sessionToken must be set here!
 	} catch (err) {
@@ -129,14 +124,13 @@ async function processIds(startDate) {
 		reasonIds = cleanIds(result.data).join(",");
 		log("setting reasonIds", reasonIds);
 	}
-	return reasonIds;
 }
 
 // sets global variable **reasonIds** (inside processIds)
 async function getReasonIds(startDate) {
 	if (sessionToken === null) {
 		// need to generate sessionToken
-		await generate("getReasonIds", "getReasonIds");
+		await generate("getReasonIds");
 		await processIds(startDate);
 	}
 	if (reasonIds.length === 0) {
@@ -211,6 +205,12 @@ function do_totals(vs) {
 	vs.PENDING_TOTAL = vs.PENDING.P + vs.PENDING.M + vs.PENDING.F;
 	vs.NO_SHOW_TOTAL = vs.NO_SHOW.P + vs.NO_SHOW.M + vs.NO_SHOW.F;
 	vs.CANCELLED_TOTAL = vs.CANCELLED.P + vs.CANCELLED.M + vs.CANCELLED.F;
+	// adjust timeStamp to reflect time of this refresh
+	vs.timeStamp= new Intl.DateTimeFormat("en-US", {
+		dateStyle: "full",
+		timeStyle: "long",
+		timeZone: "America/Los_Angeles"
+	}).format(new Date());
 }
 
 router.get("/refresh/:startDate/:location/:locationId", function(req, res) {

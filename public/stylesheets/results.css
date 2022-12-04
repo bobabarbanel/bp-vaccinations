@@ -122,7 +122,7 @@ bar {
 	align-self: flex-end;
 }
 
-#time {
+#timeStamp {
 	font-size: .4rem;
 }
 
@@ -260,7 +260,7 @@ others>div {
 		margin-left: .5em;
 	}
 
-	#time {
+	#timeStamp {
 		font-size: .18rem;
 	}
 
