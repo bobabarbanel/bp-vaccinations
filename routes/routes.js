@@ -4,6 +4,7 @@ const axios = require("axios");
 const md5 = require("md5");
 const DEBUG = false;
 function log(...args) {
+	/* used for console messages when debugging */
 	if (DEBUG) {
 		console.log(...args);
 	}
@@ -117,7 +118,7 @@ router.get("/appts/:startDate/:location/:locationId/:app", function(req, res) {
 });
 
 // sets global array reasonIds to list of ids from startDate on TimeTap
-async function processIds(startDate) {	
+async function processIds(startDate) {
 	if (reasonIds.length === 0) { // no ids currently set
 		let theURL =
 			BASE_URL + `/reasonIdList?startDate=${startDate}endDate=${startDate}` +
