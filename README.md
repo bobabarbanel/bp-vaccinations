@@ -5,7 +5,7 @@
 - 206-499-1443
 - bob.abarbanel@gmail.com
 
-Installed on Heroku. Can be called two ways:
+Installed on Heroku. The application be called two ways:
 
 https://bp-vaccinations.herokuapp.com/allvac (Show Totals only)
 
