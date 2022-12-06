@@ -16,13 +16,13 @@ const BASE_URL = "https://api.timetap.com/test";
 let sessionToken = null;
 
 const STATUS_LIST = "PENDING,OPEN,COMPLETED,CANCELLED,NO_SHOW";
-const STATUS_ARRAY = STATUS_LIST.split(',');
+const STATUS_ARRAY = STATUS_LIST.split(",");
 
 // Vaccines of Interest
 const vaccineList = "Moderna,Pfizer,Flu";
 
 // List of reason ids for this date (effectively vaccine types)
-let reasonIds = '';
+let reasonIds = "";
 class VacStore {
 	constructor(date, location, locId) {
 		this.vs = this.init(date, location, locId);
@@ -43,7 +43,7 @@ class VacStore {
 			COMPLETED: {},
 			PENDING: {},
 			NO_SHOW: {},
-			timeStamp: ''
+			timeStamp: ""
 		};
 		for (let k of STATUS_ARRAY) {
 			for (let c of ["M", "P", "F"]) // vaccine types // 23 Oct 2022: all ow "F" for Flu
@@ -62,8 +62,9 @@ async function generate(tag) {
 		const urlTimeStamp = Math.round(Date.now() / 1000);
 		log("generate", { apiKey, private_key, signature, urlTimeStamp });
 
-		const tokenURL = `${BASE_URL}/sessionToken?apiKey=${apiKey}` +
-		`&timestamp=${urlTimeStamp}&signature=${signature}`;
+		const tokenURL =
+			`${BASE_URL}/sessionToken?apiKey=${apiKey}` +
+			`&timestamp=${urlTimeStamp}&signature=${signature}`;
 		log("generate", { tokenURL });
 		const res = await axios.get(tokenURL);
 		sessionToken = res.data.sessionToken; // CRITICAL sessionToken must be set here!
@@ -93,7 +94,7 @@ router.get("/appts/:startDate/:location/:locationId/:app", function(req, res) {
 
 	calculate(startDate, locationId, vs)
 		.then(() => {
-			log('calculate returns')
+			log("calculate returns");
 			switch (vs.status) {
 				case "done":
 					vs.app = app;
@@ -114,11 +115,13 @@ router.get("/appts/:startDate/:location/:locationId/:app", function(req, res) {
 
 // sets global array reasonIds to list of ids from startDate on TimeTap
 async function processIds(startDate) {
-	if (reasonIds.length === 0) { // no ids currently set
+	if (reasonIds.length === 0) {
+		// no ids currently set
 		let theURL =
-			BASE_URL + `/reasonIdList?startDate=${startDate}endDate=${startDate}` +
+			BASE_URL +
+			`/reasonIdList?startDate=${startDate}endDate=${startDate}` +
 			`&sessionToken=${sessionToken}`;
-		log('processIds', theURL);
+		log("processIds", theURL);
 
 		const result = await axios.get(theURL);
 		reasonIds = cleanIds(result.data).join(",");
@@ -144,7 +147,9 @@ function cleanIds(initial) {
 	const removeIds = [593248, 595870, 595873, 603786, 608303, 609790, 638038];
 	log("cleanIds initial", initial);
 	// return sorted list with the above removeIds excluded
-	const value= initial.filter(id => !removeIds.includes(id)).sort((a, b) => a - b);
+	const value = initial
+		.filter(id => !removeIds.includes(id))
+		.sort((a, b) => a - b);
 	log("cleanIds result", value);
 	return value;
 }
@@ -165,8 +170,12 @@ async function queryCounts(theDate, locationId, vs) {
 	const theURL =
 		BASE_URL +
 		`/appointmentList/reportCountsByStatus` +
-		`?reasonIdList=${reasonIds}&startDate=${theDate}` +
-		`&endDate=${theDate}&statusList=${STATUS_LIST}&sessionToken=${sessionToken}`;
+		`?reasonIdList=${reasonIds}` +
+		`&startDate=${theDate}` +
+		`&locationIdList=${locationId}` +
+		`&endDate=${theDate}` +
+		`&statusList=${STATUS_LIST}` +
+		`&sessionToken=${sessionToken}`;
 
 	try {
 		vs.status = "in-progress";
@@ -206,7 +215,7 @@ function do_totals(vs) {
 	vs.NO_SHOW_TOTAL = vs.NO_SHOW.P + vs.NO_SHOW.M + vs.NO_SHOW.F;
 	vs.CANCELLED_TOTAL = vs.CANCELLED.P + vs.CANCELLED.M + vs.CANCELLED.F;
 	// adjust timeStamp to reflect time of this refresh
-	vs.timeStamp= new Intl.DateTimeFormat("en-US", {
+	vs.timeStamp = new Intl.DateTimeFormat("en-US", {
 		dateStyle: "full",
 		timeStyle: "long",
 		timeZone: "America/Los_Angeles"
@@ -218,7 +227,7 @@ router.get("/refresh/:startDate/:location/:locationId", function(req, res) {
 	const { startDate, location, locationId } = req.params;
 	log("/refresh", { startDate, location, locationId });
 	const vs = new VacStore(startDate, location, locationId).getVS();
-	log('/refresh', vs)
+	log("/refresh", vs);
 
 	calculate(startDate, locationId, vs)
 		.then(() => {
