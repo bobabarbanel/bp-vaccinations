@@ -30,8 +30,7 @@ column {
 	font-size: 36px;
 	color: blue;
 }
-.loader {
-	/* a spinner, shown while results page loads data and opens */
+/* .loader {
 	border: 16px solid #f3f3f3;
 	border-top: 16px solid blue;
 	border-radius: 50%;
@@ -39,7 +38,7 @@ column {
 	height: 200px;
 	padding: 30px;
 	animation: spin 2s linear infinite;
-}
+} */
 
 #datepicker {
 	font-size: 1rem;
