@@ -45,30 +45,12 @@ $(function() {
 
 		$("container").hide();
 		const app = $("#app").text(); // grab 'allvac' or 'byvac' name
-		$("loading").show();
-		fade_in($("loading"));
+		$("loading").show(); // reveal loading text and spinner
+
 		// open data app in this window
 		window.open(
 			`/appts/${startDate}/${encodeURI(location)}/${locationId}/${app}`,
 			"_self"
 		);
-	}
-	// Show Loading with fade-in up to 3 times
-	async function fade_in(loadText) {
-		let opacity = 0;
-		loadText.css("background-color", `rgba(0,0,255,${opacity})`);
-		let three = 3; // cycle to full opacity three times max
-		const interval = setInterval(() => {
-			opacity += 0.1;
-			if (opacity > 1) {
-				if (three-- > 0) {
-					opacity = 0.1;
-				} else {
-					clearInterval(interval);
-				}
-			}
-			loadText.css("background-color", `rgba(0,0,255,${opacity})`);
-		}, 300);
-		return;
 	}
 });

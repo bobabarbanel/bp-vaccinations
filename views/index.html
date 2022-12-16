@@ -15,10 +15,12 @@
 </head>
 
 <body>
-  <div style="opacity: 0" id="app"><%= app %></div>
+  <div style="opacity: 0" id="app">
+    <%= app %>
+  </div>
   <container>
     <h1>Vaccination Center</h1>
-   
+
     <div id="datepicker"></div>
     <div class="helpText">Date Selected:&nbsp;<span id="selectedDate"></span></div>
     <div class="stripe"></div>
@@ -32,10 +34,12 @@
 
   </container>
   <loading>
-    <div class="loading">
-      Loading...
-    </div>
+    <column>
+      <div class="loading-text">Loading...</div>
+      <div class="loader"></div> <!-- spinner -->
+    </column>
   </loading>
+
   <script src="/js/index.js"></script>
 </body>
 
